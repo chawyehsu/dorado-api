@@ -50,7 +50,7 @@ async function handler(request: Request): Promise<Response> {
   return new Response(
     JSON.stringify({
       message: 'need to specify an action',
-      help: 'https://github.com/chawyehsu/dorado/tree/api',
+      help: 'https://github.com/chawyehsu/dorado-api',
       actions: [
         '/alipan',
         '/alipan?version=&dl',
