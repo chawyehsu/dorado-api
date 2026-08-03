@@ -1,6 +1,6 @@
 {
-    "recommendations": [
-        "denoland.vscode-deno",
-        "editorconfig.editorconfig"
-    ]
+  "recommendations": [
+    "denoland.vscode-deno",
+    "editorconfig.editorconfig"
+  ]
 }

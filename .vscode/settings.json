@@ -4,7 +4,13 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
-    "source.organizeImports.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "[json]": {
+    "files.insertFinalNewline": true
+  },
+  "[jsonc]": {
+    "files.insertFinalNewline": true
   },
   "[typescript]": {
     "editor.defaultFormatter": "denoland.vscode-deno"
