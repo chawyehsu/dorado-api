@@ -22,6 +22,14 @@ export async function doradoFetch(
   }
   return await fetch(input, { ...init, headers })
 }
+
+export function jsonResponse(body: unknown, status = 200): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      'content-type': 'application/json; charset=UTF-8',
+    },
+  })
 }
 
 export function toHexPolyfill() {

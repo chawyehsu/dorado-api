@@ -1,4 +1,4 @@
-import { doradoFetch } from './utils.ts'
+import { doradoFetch, jsonResponse } from './utils.ts'
 
 interface KookApiResponse {
   url?: string
@@ -10,15 +10,7 @@ export default async function handleRequest(
   const sp = new URLSearchParams(new URL(request.url).search)
   const version = sp.get('version')
   if (!version) {
-    return new Response(
-      JSON.stringify({ message: 'version parameter is required' }),
-      {
-        status: 400,
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
+    return jsonResponse({ message: 'version parameter is required' }, 400)
   }
 
   const UPSTREAM_API =
@@ -30,30 +22,17 @@ export default async function handleRequest(
   const data: KookApiResponse = await res.json()
 
   if (!data.url) {
-    return new Response(
-      JSON.stringify({
-        message: 'upstream api failed, please try again later',
-      }),
+    return jsonResponse(
       {
-        status: 500,
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
+        message: 'upstream api failed, please try again later',
       },
+      500,
     )
   }
 
   const regex = `Kook_PC_Setup_v${version}_`
   if (!data.url.match(new RegExp(regex))) {
-    return new Response(
-      JSON.stringify({ message: 'version parameter mismatch' }),
-      {
-        status: 400,
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
+    return jsonResponse({ message: 'version parameter mismatch' }, 400)
   }
 
   return Response.redirect(data.url, 302)

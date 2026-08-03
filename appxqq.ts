@@ -1,4 +1,4 @@
-import { doradoFetch } from './utils.ts'
+import { doradoFetch, jsonResponse } from './utils.ts'
 
 export default async function handleRequest(
   request: Request,
@@ -32,29 +32,14 @@ export default async function handleRequest(
         return Response.redirect(url, 302)
       }
 
-      return new Response(
-        JSON.stringify({
-          'url': url,
-          'version': version,
-          'name': name,
-          'sha1': hash,
-        }),
-        {
-          headers: {
-            'content-type': 'application/json; charset=UTF-8',
-          },
-        },
-      )
+      return jsonResponse({
+        'url': url,
+        'version': version,
+        'name': name,
+        'sha1': hash,
+      })
     }
   }
 
-  return new Response(
-    JSON.stringify({ message: "couldn't process your request" }),
-    {
-      status: 500,
-      headers: {
-        'content-type': 'application/json; charset=UTF-8',
-      },
-    },
-  )
+  return jsonResponse({ message: "couldn't process your request" }, 500)
 }

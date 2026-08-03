@@ -1,6 +1,7 @@
 import { BufReader, BufWriter } from 'https://deno.land/std@0.158.0/io/mod.ts'
 import { TextProtoReader } from 'https://deno.land/std@0.158.0/textproto/mod.ts'
 import { decodeBase64 } from '@std/encoding'
+import { jsonResponse } from './utils.ts'
 
 interface DownloadInfo {
   FileId: string
@@ -150,21 +151,12 @@ export default async function handleRequest(
       },
     }
 
-    return new Response(JSON.stringify(body), {
-      status: response.status,
-      headers: {
-        'content-type': 'application/json; charset=UTF-8',
-      },
-    })
+    return jsonResponse(body, response.status)
   }
 
   const data = await response.json()
   if (!version) {
-    return new Response(JSON.stringify(data.ContentId), {
-      headers: {
-        'content-type': 'application/json; charset=UTF-8',
-      },
-    })
+    return jsonResponse(data.ContentId)
   }
 
   // Find the install package and not the update packages
@@ -179,9 +171,5 @@ export default async function handleRequest(
   item.Hashes.Sha1 = decodeBase64(item.Hashes.Sha1).toHex()
   item.Hashes.Sha256 = decodeBase64(item.Hashes.Sha256).toHex()
 
-  return new Response(JSON.stringify(item), {
-    headers: {
-      'content-type': 'application/json; charset=UTF-8',
-    },
-  })
+  return jsonResponse(item)
 }

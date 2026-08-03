@@ -1,4 +1,4 @@
-import { doradoFetch } from './utils.ts'
+import { doradoFetch, jsonResponse } from './utils.ts'
 
 function splitFromLastDot(inputString: string): [string, string | undefined] {
   const lastDotIndex = inputString.lastIndexOf('.')
@@ -18,27 +18,14 @@ export default async function handleRequest(
 ): Promise<Response> {
   const sp = new URLSearchParams(new URL(request.url).search)
   if (!sp.has('version')) {
-    return new Response(
-      JSON.stringify({ message: 'version parameter is required' }),
-      {
-        status: 400,
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
+    return jsonResponse({ message: 'version parameter is required' }, 400)
   }
 
   const [ver, build] = splitFromLastDot(sp.get('version')!)
   if (!build) {
-    return new Response(
-      JSON.stringify({ message: 'version parameter format is invalid' }),
-      {
-        status: 400,
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
-      },
+    return jsonResponse(
+      { message: 'version parameter format is invalid' },
+      400,
     )
   }
 
@@ -62,17 +49,12 @@ export default async function handleRequest(
       const currentVersion = `${availableVersionMatch[2]}.${
         availableVersionMatch[1]
       }`
-      return new Response(
-        JSON.stringify({
+      return jsonResponse(
+        {
           message:
             `requested version ${ver}.${build}, current available version is ${currentVersion}`,
-        }),
-        {
-          status: 404,
-          headers: {
-            'content-type': 'application/json; charset=UTF-8',
-          },
         },
+        404,
       )
     }
 

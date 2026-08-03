@@ -1,4 +1,4 @@
-import { doradoFetch } from './utils.ts'
+import { doradoFetch, jsonResponse } from './utils.ts'
 
 export default async function handleRequest(
   request: Request,
@@ -17,15 +17,7 @@ export default async function handleRequest(
     const data = await response.json()
     const resp = data.resp
     if (resp.retCode !== 0) {
-      return new Response(
-        JSON.stringify({ message: 'upstream api returns error' }),
-        {
-          status: 500,
-          headers: {
-            'content-type': 'application/json; charset=UTF-8',
-          },
-        },
-      )
+      return jsonResponse({ message: 'upstream api returns error' }, 500)
     }
 
     const url = resp.soft_list[0].download_https_url
@@ -35,44 +27,24 @@ export default async function handleRequest(
     if (sp.has('dl')) {
       const req_version = sp.get('version')
       if (req_version && req_version !== version) {
-        return new Response(
-          JSON.stringify({
+        return jsonResponse(
+          {
             message: 'version mismatch',
             requested: req_version,
             available: version,
-          }),
-          {
-            status: 404,
-            headers: {
-              'content-type': 'application/json; charset=UTF-8',
-            },
           },
+          404,
         )
       }
 
       return Response.redirect(url, 302)
     }
 
-    return new Response(
-      JSON.stringify({
-        'url': url,
-        'version': version,
-      }),
-      {
-        headers: {
-          'content-type': 'application/json; charset=UTF-8',
-        },
-      },
-    )
+    return jsonResponse({
+      'url': url,
+      'version': version,
+    })
   }
 
-  return new Response(
-    JSON.stringify({ message: "couldn't process your request" }),
-    {
-      status: 500,
-      headers: {
-        'content-type': 'application/json; charset=UTF-8',
-      },
-    },
-  )
+  return jsonResponse({ message: "couldn't process your request" }, 500)
 }
