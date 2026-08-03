@@ -73,4 +73,6 @@ async function handler(request: Request): Promise<Response> {
   )
 }
 
-Deno.serve(handler)
+export default {
+  fetch: handler,
+}
