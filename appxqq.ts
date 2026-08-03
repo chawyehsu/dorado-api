@@ -1,3 +1,5 @@
+import { doradoFetch } from './utils.ts'
+
 export default async function handleRequest(
   request: Request,
 ): Promise<Response> {
@@ -6,13 +8,9 @@ export default async function handleRequest(
   // https://www.microsoft.com/zh-cn/p/qq%E6%A1%8C%E9%9D%A2%E7%89%88/9nhlgf0zwc5s
   const BODY = 'type=ProductId&url=9nhlgf0zwc5s&ring=Retail&lang=en-US'
 
-  const response = await fetch(UPSTREAM_API, {
+  const response = await doradoFetch(UPSTREAM_API, {
     method: 'POST',
     body: BODY,
-    headers: {
-      'user-agent': 'Deno/1.0 (Deno Deploy) Scoop/1.0 (https://scoop.sh)',
-      'content-type': 'application/x-www-form-urlencoded',
-    },
   })
 
   if (response.ok) {

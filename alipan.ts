@@ -1,3 +1,5 @@
+import { doradoFetch } from './utils.ts'
+
 export default async function handleRequest(
   request: Request,
 ): Promise<Response> {
@@ -6,13 +8,9 @@ export default async function handleRequest(
   // https://pc.qq.com/detail/16/detail_28156.html
   const BODY = 'cmdid=3318&jprxReq%5Breq%5D%5Bsoft_id_list%5D%5B%5D=28156'
 
-  const response = await fetch(UPSTREAM_API, {
+  const response = await doradoFetch(UPSTREAM_API, {
     method: 'POST',
     body: BODY,
-    headers: {
-      'user-agent': 'Deno/1.0 (Deno Deploy) Scoop/0.5.2 (+https://scoop.sh)',
-      'content-type': 'application/x-www-form-urlencoded',
-    },
   })
 
   if (response.ok) {

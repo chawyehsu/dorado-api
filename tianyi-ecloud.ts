@@ -1,15 +1,13 @@
+import { doradoFetch } from './utils.ts'
+
 export default async function handleRequest(
   request: Request,
 ): Promise<Response> {
   const UPSTREAM_API =
     'https://cloud.189.cn/api/portal/listClients.action?pcClientType='
 
-  const response = await fetch(UPSTREAM_API, {
+  const response = await doradoFetch(UPSTREAM_API, {
     method: 'GET',
-    headers: {
-      'user-agent': 'Deno/1.0 (Deno Deploy) Scoop/1.0 (+https://scoop.sh)',
-      'content-type': 'application/x-www-form-urlencoded',
-    },
   })
 
   if (response.ok) {

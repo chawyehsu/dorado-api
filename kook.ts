@@ -1,3 +1,5 @@
+import { doradoFetch } from './utils.ts'
+
 interface KookApiResponse {
   url?: string
 }
@@ -22,13 +24,8 @@ export default async function handleRequest(
   const UPSTREAM_API =
     'https://www.kookapp.cn/api/v2/updates/latest-version?platform=windows'
 
-  const res = await fetch(UPSTREAM_API, {
+  const res = await doradoFetch(UPSTREAM_API, {
     method: 'GET',
-    headers: {
-      'user-agent': 'Deno/1.0 (Deno Deploy) Scoop/1.0 (+https://scoop.sh)',
-      'content-type': 'application/x-www-form-urlencoded',
-      'accept-encoding': 'gzip, deflate, br',
-    },
   })
   const data: KookApiResponse = await res.json()
 

@@ -1,3 +1,5 @@
+import { doradoFetch } from './utils.ts'
+
 function splitFromLastDot(inputString: string): [string, string | undefined] {
   const lastDotIndex = inputString.lastIndexOf('.')
 
@@ -42,13 +44,8 @@ export default async function handleRequest(
 
   const downloadUrl = `https://uu.gdl.netease.com/${build}/UU-${ver}.exe`
 
-  const r = await fetch('https://adl.netease.com/d/g/uu/c/gw/js', {
+  const r = await doradoFetch('https://adl.netease.com/d/g/uu/c/gw/js', {
     method: 'GET',
-    headers: {
-      'user-agent': 'Deno/2.0 (Deno Deploy) Scoop/1.0 (+https://scoop.sh)',
-      'content-type': 'application/x-www-form-urlencoded',
-      'accept-encoding': 'gzip, deflate, br',
-    },
   })
 
   const regex = `(${downloadUrl.replaceAll(/\./g, '\\.')}\\?key.*?)"`
