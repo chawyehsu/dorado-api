@@ -56,6 +56,29 @@ export default async function handleRequest(
   const js = await r.text()
   const match = js.match(new RegExp(regex))
   if (!match || match.length < 2) {
+    // Upstream JS typically contains URLs like ...netease.com/{build}/UU-{version}.exe.
+    // If requested version is stale, surface the current version instead of returning 500.
+    const availableVersionMatch = js.match(
+      /\.netease\.com\/(\d+)\/UU-([\d.]+)\.exe/i,
+    )
+    if (availableVersionMatch && availableVersionMatch.length >= 3) {
+      const currentVersion = `${availableVersionMatch[2]}.${
+        availableVersionMatch[1]
+      }`
+      return new Response(
+        JSON.stringify({
+          message:
+            `requested version ${ver}.${build}, current available version is ${currentVersion}`,
+        }),
+        {
+          status: 404,
+          headers: {
+            'content-type': 'application/json; charset=UTF-8',
+          },
+        },
+      )
+    }
+
     return new Response('Failed to find download keys', { status: 500 })
   }
 
