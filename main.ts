@@ -48,7 +48,7 @@ async function handler(request: Request): Promise<Response> {
   }
 
   return jsonResponse({
-    message: 'need to specify an action',
+    message: 'missing action',
     help: 'https://github.com/chawyehsu/dorado-api',
     actions: [
       '/alipan',
@@ -62,7 +62,7 @@ async function handler(request: Request): Promise<Response> {
       '/neteaseuu?version=',
       '/kook?version=',
     ],
-  })
+  }, 404)
 }
 
 export default {
