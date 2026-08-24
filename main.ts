@@ -5,6 +5,7 @@ import handleKook from './kook.ts'
 import handlerNeteaseUU from './neteaseuu.ts'
 import handleSwift from './swift.ts'
 import handleTianyiEcloud from './tianyi-ecloud.ts'
+import handleFutunn from './futunn.ts'
 import { jsonResponse, toHexPolyfill } from './utils.ts'
 
 toHexPolyfill()
@@ -47,6 +48,11 @@ async function handler(request: Request): Promise<Response> {
     return await handleTianyiEcloud(request)
   }
 
+  // futunn
+  if (pathname === '/futunn') {
+    return await handleFutunn(request)
+  }
+
   return jsonResponse({
     message: 'missing action',
     help: 'https://github.com/chawyehsu/dorado-api',
@@ -61,6 +67,7 @@ async function handler(request: Request): Promise<Response> {
       '/tianyi-ecloud?dl',
       '/neteaseuu?version=',
       '/kook?version=',
+      '/futunn',
     ],
   }, 404)
 }
