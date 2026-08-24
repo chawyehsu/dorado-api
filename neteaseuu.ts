@@ -31,9 +31,21 @@ export default async function handleRequest(
 
   const downloadUrl = `https://uu.gdl.netease.com/${build}/UU-${ver}.exe`
 
-  const r = await doradoFetch('https://adl.netease.com/d/g/uu/c/gw/js', {
-    method: 'GET',
-  })
+  let r: Response
+  try {
+    r = await doradoFetch('https://adl.netease.com/d/g/uu/c/gw/js', {
+      method: 'GET',
+    })
+  } catch (error) {
+    return jsonResponse(
+      {
+        message: error instanceof Error
+          ? error.message
+          : 'Upstream fetch failed, please try again later.',
+      },
+      502,
+    )
+  }
 
   const regex = `(${downloadUrl.replaceAll(/\./g, '\\.')}\\?key.*?)"`
 
