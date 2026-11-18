@@ -65,6 +65,4 @@ async function handler(request: Request): Promise<Response> {
   }, 404)
 }
 
-export default {
-  fetch: handler,
-}
+export default handler

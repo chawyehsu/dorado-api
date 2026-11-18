@@ -5,7 +5,7 @@ declare global {
 }
 
 const DEFAULT_HEADERS = {
-  'user-agent': 'Deno/2.0 (Deno Deploy) Scoop/1.0 (+https://scoop.sh)',
+  'user-agent': 'dorado-api/1.0 Scoop/1.0 (+https://scoop.sh)',
   'content-type': 'application/x-www-form-urlencoded',
   'accept-encoding': 'gzip, deflate, br',
 }

@@ -1,6 +1,3 @@
-import { BufReader, BufWriter } from 'https://deno.land/std@0.158.0/io/mod.ts'
-import { TextProtoReader } from 'https://deno.land/std@0.158.0/textproto/mod.ts'
-import { decodeBase64 } from '@std/encoding'
 import { jsonResponse } from './utils.ts'
 
 interface DownloadInfo {
@@ -13,10 +10,6 @@ interface DownloadInfo {
   }
 }
 
-const encoder = new TextEncoder()
-
-// Deno Deploy doesn't have this cert, and Deno.createHttpClient isn't stable yet,
-// so this is the best I could come up with.
 // Microsoft Update Secure Server CA 2.1
 const caCert = `-----BEGIN CERTIFICATE-----
 MIIHADCCBOigAwIBAgITMwAAAAq4kaLIClCl3wAAAAAACjANBgkqhkiG9w0BAQsF
@@ -60,58 +53,27 @@ HYgCWASmHOkRysH6T3n46pDmexplqG5dGM5QNrCjn5u1ptgVdDPR1LGHTT+KGT+F
 -----END CERTIFICATE-----
 `
 
+const httpClient = Deno.createHttpClient({ caCerts: [caCert] })
+
 async function fetchVersion(
   channel: string,
   arch: string,
   version?: string | null,
 ): Promise<Response> {
-  const conn = await Deno.connectTls({
-    hostname: 'msedge.api.cdp.microsoft.com',
-    port: 443,
-    caCerts: [caCert],
-  })
-  const writer = new BufWriter(conn)
-
   const path = version === undefined || version === null
     ? '/latest?action=select'
     : `/${version}/files?action=GenerateDownloadInfo`
+  const url =
+    `https://msedge.api.cdp.microsoft.com/api/v1.1/contents/Browser/namespaces/Default/names/msedge-${channel}-win-${arch.toUpperCase()}/versions/${path}`
 
-  const lines = [
-    `POST /api/v1.1/contents/Browser/namespaces/Default/names/msedge-${channel}-win-${arch.toUpperCase()}/versions/${path} HTTP/1.1`,
-    'Host: msedge.api.cdp.microsoft.com',
-    'Connection: keep-alive',
-    `Content-Length: 57`,
-    'Content-Type: application/json',
-    'User-Agent: Microsoft Edge Update/1.3.129.35;winhttp',
-    '',
-    '{"targetingAttributes":{"Updater":"MicrosoftEdgeUpdate"}}',
-  ]
-  await writer.write(encoder.encode(lines.join('\r\n') + '\r\n\r\n'))
-  await writer.flush()
-
-  const bufReader = new BufReader(conn)
-  const tpReader = new TextProtoReader(bufReader)
-  const statusLine = await tpReader.readLine()
-  if (statusLine === null) {
-    throw new Error('Malformed HTTP response')
-  }
-  const [_, status, statusText] = statusLine.match(/HTTP\/1.1 (\d{3}) (.*)/) ??
-    []
-  const headers = await tpReader.readMimeHeader()
-
-  if (headers === null) {
-    return new Response(null, {
-      status: Number(status),
-      statusText,
-    })
-  }
-  const body = new Uint8Array(Number(headers.get('content-length')))
-  await bufReader.readFull(body)
-
-  return new Response(body, {
-    status: Number(status),
-    statusText,
-    headers: headers ?? undefined,
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'User-Agent': 'Microsoft Edge Update/1.3.129.35;winhttp',
+    },
+    body: '{"targetingAttributes":{"Updater":"MicrosoftEdgeUpdate"}}',
+    client: httpClient,
   })
 }
 
@@ -168,8 +130,14 @@ export default async function handleRequest(
   }
 
   // Convert hashes to a format Scoop understands
-  item.Hashes.Sha1 = decodeBase64(item.Hashes.Sha1).toHex()
-  item.Hashes.Sha256 = decodeBase64(item.Hashes.Sha256).toHex()
+  item.Hashes.Sha1 = Uint8Array.from(
+    atob(item.Hashes.Sha1),
+    (char) => char.charCodeAt(0),
+  ).toHex()
+  item.Hashes.Sha256 = Uint8Array.from(
+    atob(item.Hashes.Sha256),
+    (char) => char.charCodeAt(0),
+  ).toHex()
 
   return jsonResponse(item)
 }

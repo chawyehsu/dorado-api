@@ -3,10 +3,32 @@
 Some APIs that [dorado](https://github.com/chawyehsu/dorado) bucket uses to
 maintain manifests.
 
-Powered by [Deno](https://deno.com) and hosted on
-[Deno Deploy](https://deno.com/deploy).
+## Deployment
 
-## Development
+### Netlify Edge Functions
+
+Runs on [Netlify Edge Functions](https://docs.netlify.com/build/edge-functions/overview/).
+
+#### Local
+
+Install the [Netlify CLI](https://docs.netlify.com/cli/get-started/) and run:
+
+```bash
+npx netlify dev
+```
+
+#### Production
+
+Deploy by connecting the repository to Netlify. The checked-in `netlify.toml`
+configures the Edge Function route.
+
+### Deno Deploy
+
+**Deprecating**: Deno Deploy will be shut down in the future.
+
+Runs on [Deno Deploy](https://deno.com/deploy).
+
+#### Local
 
 Run with `deno serve`:
 
@@ -19,6 +41,10 @@ or with watch mode:
 ```bash
 deno task dev
 ```
+
+#### Production
+
+Deploy by connecting the repository to Deno Deploy.
 
 ## License
 
