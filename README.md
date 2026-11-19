@@ -3,6 +3,8 @@
 Some APIs that [dorado](https://github.com/chawyehsu/dorado) bucket uses to
 maintain manifests.
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/ba53d064-ad14-4d5a-990f-b95286caaf42/deploy-status)](https://app.netlify.com/projects/dorado-api/deploys)
+
 ## Deployment
 
 ### Netlify Edge Functions

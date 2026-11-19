@@ -3,7 +3,6 @@ import handlerAppxqq from './appxqq.ts'
 import handlerEdge from './edge.ts'
 import handleKook from './kook.ts'
 import handlerNeteaseUU from './neteaseuu.ts'
-import handleSwift from './swift.ts'
 import handleTianyiEcloud from './tianyi-ecloud.ts'
 import handleFutunn from './futunn.ts'
 import { jsonResponse, toHexPolyfill } from './utils.ts'
@@ -16,16 +15,6 @@ async function handler(request: Request): Promise<Response> {
   // aliundrive/alipan
   if (pathname === '/alipan') {
     return await handlerAliyunDrive(request)
-  }
-
-  // swift (temporary fix)
-  if (pathname === '/swift-tmp') {
-    return await handleSwift(request)
-  }
-
-  // appxqq
-  if (pathname === '/appxqq') {
-    return await handlerAppxqq(request)
   }
 
   // edge
@@ -59,8 +48,6 @@ async function handler(request: Request): Promise<Response> {
     actions: [
       '/alipan',
       '/alipan?version=&dl',
-      '/appxqq',
-      '/appxqq?dl',
       '/edge?arch=&channel=',
       '/edge?arch=&channel=&dl',
       '/tianyi-ecloud',
