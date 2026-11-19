@@ -1,3 +1,3 @@
 import handler from '../../main.ts'
 
-export default (request: Request) => handler(request)
+export default (request: Request) => handler.fetch(request)
